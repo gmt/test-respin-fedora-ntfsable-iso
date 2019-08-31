@@ -65,8 +65,20 @@ mock -r ${bmocktype} --install git lorax-lmc-novirt vim-minimal pykickstart \
 	libblockdev-{lvm,swap,loop,crypto,mpath,btrfs,dm,mdraid,nvdimm} \
 		|| { echo "mock install failed" >&2; exit 1; }
 
+mybranch=GIGO
+case ${btype} in
+	fedora)
+		mybranch=f${brel}
+		myksrepo="https://pagure.io/fedora-kickstarts"
+		;;
+	*)
+		echo "ASDFASDFASDRERRAS" >&2
+		exit 1
+		;;
+esac
+
 mock -r ${bmocktype} --old-chroot --shell \
-	"cd /root && git clone https://pagure.io/fedora-kickstarts" \
+	"cd /root && git clone -b ${mybranch} ${myksrepo} kickstarts" \
 	|| { echo "git clone failed" >&2; exit 1; }
 
 myks=bsksdne
@@ -82,7 +94,7 @@ case ${btype} in
 		;;
 esac
 
-mock -r ${bmocktype} --old-chroot --shell "$(echo cd /root/fedora-kickstarts \&\& \
+mock -r ${bmocktype} --old-chroot --shell "$(echo cd /root/kickstarts \&\& \
 ksflatten --config ${myks} -o flat-${myks} --version ${myversion} )" || {
 	echo "flatten failed" >&2
 	exit 1
@@ -102,7 +114,7 @@ case ${btype} in
 		;;
 esac
 
-mock -r ${bmocktype} --old-chroot --shell "cd /root/fedora-kickstarts && livemedia-creator \
+mock -r ${bmocktype} --old-chroot --shell "cd /root/kickstarts && livemedia-creator \
 	--ks flat-${myks} --no-virt --resultdir /var/lmc --project ${myproject} --make-iso \
 	--volid ${myvolid} --iso-only --iso-name ${myisoname} --releasever ${brel} \
 	--title ${mytitle} --macboot" || {
