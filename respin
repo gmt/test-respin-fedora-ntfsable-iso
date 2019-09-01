@@ -9,9 +9,8 @@ usage() {
 	echo "# $0 fedora-30 x86_64" >&2
 	echo >&2
 	echo "nb: First argument must contain hyphen followed by release number" >&2
-	echo "    Neither argument may contain whitespace" >&2
-	echo "    Only supported types: fedora-29 fedora-3[012] rhel-[78]"
-	echo "    only x86_64 supported on rhel-[78]"
+	echo "    Only supported types: fedora-29, fedora-30"
+	echo "    Only supported arches: i386, x86_64"
 	exit 1
 }
 
