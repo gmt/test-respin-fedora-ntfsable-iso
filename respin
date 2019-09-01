@@ -36,13 +36,20 @@ btypedrel=${1}
 barch=${2}
 bmocktype="${btypedrel}-${barch}"
 
-[[ -f "./etc_mock_default.cfg_${btypedrel}" ]] || {
-	echo "File etc_mock_default.cfg_${btypedrel} not present in ${PWD}" >&2
+[[ -f "./etc_mock_default.cfg_${bmocktype}" ]] || {
+	echo "File etc_mock_default.cfg_${bmocktype} not present in ${PWD}" >&2
 	exit 1
 }
 
-cp "./etc_mock_default.cfg_${btypedrel}"  /etc/mock/default.cfg || {
-	echo "Failed copying to /etc/mock/default.cfg" >&2
+[[ -f /etc/mock/${bmocktype}.cfg.orig ]] || {
+	cp -v /etc/mock/${bmocktype}.cfg /etc/mock/${bmocktype}.cfg.orig || {
+		echo "Error backing up /etc/mock/${bmocktype}.cfg; not replacing" >&2
+		exit 1
+	}
+}
+
+cp "./etc_mock_default.cfg_${bmocktype}" /etc/mock/${bmocktype}.cfg || {
+	echo "Failed copying to /etc/mock/${bmocktype}.cfg" >&2
 	exit 1
 }
 
